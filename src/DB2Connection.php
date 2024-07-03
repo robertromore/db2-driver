@@ -24,9 +24,10 @@ class DB2Connection extends Connection
         string $database = '',
         string $tablePrefix = '',
         array $config = []
-        ) {
+    ) {
         parent::__construct($pdo, $database, $tablePrefix, $config);
-        $this->currentSchema = $this->defaultSchema = strtoupper($config['schema'] ?? null);
+        $schema = !empty($config['schema']) ? strtoupper($config['schema']) : 'DEFAULT';
+        $this->currentSchema = $this->defaultSchema = $schema;
     }
 
     /**
@@ -50,7 +51,7 @@ class DB2Connection extends Connection
      */
     public function setCurrentSchema(string $schema)
     {
-        $this->statement('SET SCHEMA ?', [$schema !== "" ? strtoupper($schema) : "DEFAULT"]);
+        $this->statement('SET SCHEMA ?', [!empty($schema) ? strtoupper($schema) : "DEFAULT"]);
     }
 
     /**
